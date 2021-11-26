@@ -104,6 +104,9 @@ export default {
       this.getDataAPI(true);
     },
     sortHandlerClick(target){
+      Object.keys(this.sort).forEach( i => {
+        this.sort[i] = true;
+      });
       switch (target) {
         case 'id':
           this.sortField = 'id';
