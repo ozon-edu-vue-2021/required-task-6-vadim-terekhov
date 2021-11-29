@@ -3,53 +3,97 @@
     <div class="table-title">
       <slot>Заголовок</slot>
     </div>
-    <div class="table-header">
-      <p class="table-header-item table-header-id"
-        @click="sortHandlerClick('id')"
-      >id
-        <font-awesome-icon class="sort" icon="sort-numeric-up" v-if="sort.flagId"/>
-        <font-awesome-icon class="sort" icon="sort-numeric-down" v-else/>
-      </p>
-      <p class="table-header-item"
-        @click="sortHandlerClick('body')"
-      >body
-        <font-awesome-icon class="sort" icon="sort-alpha-up" v-if="sort.flagBody"/>
-        <font-awesome-icon class="sort" icon="sort-alpha-down" v-else/>
-      </p>
-      <p class="table-header-item"
-        @click="sortHandlerClick('email')"
-      >email
-        <font-awesome-icon class="sort" icon="sort-alpha-up" v-if="sort.flagEmail"/>
-        <font-awesome-icon class="sort" icon="sort-alpha-down" v-else/>
-      </p>
-      <p class="table-header-item"
-        @click="sortHandlerClick('name')"
-      >name
-        <font-awesome-icon class="sort" icon="sort-alpha-up" v-if="sort.flagName"/>
-        <font-awesome-icon class="sort" icon="sort-alpha-down" v-else/>
-      </p>
+    <div class="table-header-wrapper">
+      <div class="table-header">
+        <p class="table-header-item table-header-id"
+          @click="sortHandlerClick('flagId')"
+        >id
+          <font-awesome-icon class="sort" icon="sort-numeric-up" v-if="sort.flagId"/>
+          <font-awesome-icon class="sort" icon="sort-numeric-down" v-else/>
+        </p>
+        <p class="table-header-item"
+          @click="sortHandlerClick('flagBody')"
+        >body
+          <font-awesome-icon class="sort" icon="sort-alpha-up" v-if="sort.flagBody"/>
+          <font-awesome-icon class="sort" icon="sort-alpha-down" v-else/>
+        </p>
+        <p class="table-header-item"
+          @click="sortHandlerClick('flagEmail')"
+        >email
+          <font-awesome-icon class="sort" icon="sort-alpha-up" v-if="sort.flagEmail"/>
+          <font-awesome-icon class="sort" icon="sort-alpha-down" v-else/>
+        </p>
+        <p class="table-header-item"
+          @click="sortHandlerClick('flagName')"
+        >name
+          <font-awesome-icon class="sort" icon="sort-alpha-up" v-if="sort.flagName"/>
+          <font-awesome-icon class="sort" icon="sort-alpha-down" v-else/>
+        </p>
+      </div>
+      <div class="table-header">
+        <p class="table-header-item table-header-id">
+          -
+        </p>
+        <p class="table-header-item ">
+          <my-input 
+            :config="configFieldsInputs.body"
+            v-model="filterFields.body"
+            @clearField="$emit('clearField','body')"
+          />
+        </p>
+        <p class="table-header-item ">
+          <my-input 
+            :config="configFieldsInputs.email"
+            v-model="filterFields.email"
+            @clearField="$emit('clearField','email')"
+          />
+        </p>
+        <p class="table-header-item ">
+          <my-input 
+            :config="configFieldsInputs.name"
+            v-model="filterFields.name"
+            @clearField="$emit('clearField','name')"
+          />
+        </p>
+      </div>
     </div>
+    
     <div class="table-body">
-      <my-table-row 
-        v-for="item in data"
-        :key="item.id"
-        :itemData="item"
-      />
+      <div v-if="data.length > 0">
+        <my-table-row
+          v-for="item in data"
+          :key="item.id"
+          :itemData="item"
+        />
+      </div>
+      <div class="table-body-empty" v-else>
+        Записей нет...
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import MyTableRow from '@/components/MyTableRow.vue';
+import MyInput from '@/components/MyInput.vue';
+
 export default {
   name: 'MyTable',
-  components:{ MyTableRow },
+  components:{ MyTableRow, MyInput },
   props:{
     data:{
       type: Array,
       default: () => [],
     },
     sort:{
+      type: Object,
+      default: () => {},
+    },
+    filterFields:{
+      type: Object,
+      default: () => {},
+    },
+    configFieldsInputs:{
       type: Object,
       default: () => {},
     }
@@ -80,13 +124,15 @@ export default {
   width: 100%;
   margin-bottom: 10px;
 }
+.table-header-wrapper{
+  position: sticky;
+  top: 0;
+}
 .table-header{
   display: flex;
   background-color: burlywood;
   text-transform: uppercase;
   line-height: 40px;
-  position: sticky;
-  top: 0;
 }
 .table-header-item{
   margin: 0;
@@ -104,5 +150,8 @@ export default {
 }
 .sort{
   margin-left: 5px;
+}
+.table-body-empty{
+  margin-top: 20px;
 }
 </style>
